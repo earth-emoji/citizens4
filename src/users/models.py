@@ -55,12 +55,3 @@ class User(AbstractUser):
     def is_in_multiple_groups(self, groups):
         return self.groups.filter(name__in=groups).exists()
 
-
-class OnlineStatus(models.Model):
-    STATUS_CHOICE = (
-        ('Online', 'Online'),
-        ('Offline', 'Offline')
-    )
-    user = models.OneToOneField(User, on_delete=models.DO_NOTHING, related_name='online')
-    status = models.CharField(max_length=7, choices=STATUS_CHOICE, blank=True)
-
