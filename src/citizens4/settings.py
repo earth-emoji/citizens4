@@ -50,7 +50,9 @@ INSTALLED_APPS = [
     'rest_framework',
     'users',
     'accounts',
+    'files',
     'photos',
+    'organizations',
 ]
 
 MIDDLEWARE = [
@@ -64,7 +66,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'citizens4.urls'
-ASGI_APPLICATION = 'opentalk.routing.application'
+ASGI_APPLICATION = 'citizens4.routing.application'
 
 TEMPLATES = [
     {

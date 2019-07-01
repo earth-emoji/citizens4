@@ -7,7 +7,7 @@
   <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 
-  <title>OpenTalk | {% block title %}Welcome{% endblock %}</title>
+  <title>Citizens 4 | {% block title %}Welcome{% endblock %}</title>
   <link rel="stylesheet" type="text/css" href="{% static 'vendors/bootstrap/css/bootstrap.min.css' %}">
   <link rel="stylesheet" type="text/css" href="{% static 'vendors/fontawesome/css/all.min.css' %}">
   {% block stylesheets %}{% endblock stylesheets %}
@@ -42,11 +42,12 @@
                 </div>
                 <div class="card mb-3" style="width: 18rem;">
                     <div class="card-header">
-                        Content
+                        Organizations
                     </div>
                     <ul class="list-group list-group-flush">
-                        <li class="list-group-item"><a href="{% url 'rooms:index' %}">Rooms</a></li>
-                        <li class="list-group-item"><a href="#">Link</a></li>
+                        <li class="list-group-item"><a href="{% url 'organizations:org-new' %}">Create</a></li>
+                        <li class="list-group-item"><a href="{% url 'organizations:my-orgs' request.user.profile.slug %}">My Organizations</a></li>
+                        <li class="list-group-item"><a href="{% url 'organizations:list' %}">All Organizations</a></li>
                     </ul>
                 </div>
             </div>

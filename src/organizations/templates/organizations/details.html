@@ -1,0 +1,172 @@
+{% extends 'profile.html' %}
+
+
+
+{% block content %}
+<div class="container-fluid">
+    <!-- header -->
+    <div class="row mb-4">
+        <div class="col-6">
+            <h2 class="my-3"> 
+                {{ organization.name }}
+            </h2>
+        </div>
+        <div class="col-6">
+        {% if request.user.profile == organization.founder %}
+            <a href="#" class="btn btn-custom rounded-pill float-right">
+                <i class="fas fa-marker"></i> Edit
+            </a>
+        {% else %}
+            <form id="req-form-{{organization.id}}" class="float-right" method="post">
+                {% csrf_token %}
+                <input type="hidden" id="req-{{organization.id}}" value="{{ organization.id }}" />
+                <button type="submit" onclick="groupRequest('req-form-{{organization.id}}', {{organization.id}})" class="btn btn-custom rounded-pill">
+                    <i class="fas fa-user-plus"></i> Join
+                </button>
+            </form>
+        {% endif %}
+        </div>
+    </div>
+
+    <!-- Description -->
+    <div class="row my-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        Description
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">{{ organization.description }}</p>
+                </div>
+            </div>
+        </div>   
+    </div>
+
+    <div class="row mb-4">
+        {% if organization.founder == request.user.profile %}
+            <div class="col-4">
+           <div class="card">
+                <div class="card-header">
+                    <h5>Requests</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <caption>List of requests</caption>
+                            <thead>
+                                <tr>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for req in requests.all %}
+                                    <tr>
+                                        <td>{{ req.prospect.user.name }}</td>
+                                        <td>
+                                            <form method="POST" id="res-form-{{req.id}}">
+                                                {% csrf_token %}
+                                                <input type="hidden" id="res-{{req.organization.id}}" value="{{ req.organization.id }}" />
+                                                <input type="hidden" id="res-{{req.prospect.id}}" value="{{ req.prospect.id }}" />
+                                                <button type="submit" onclick="addMember('res-form-{{req.id}}', {{req.organization.id}}, {{ req.prospect.id }})" class="btn btn-custom rounded-pill">Accept</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div> 
+        </div>
+        {% endif %}
+        
+        <div class="col">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">Members</h5>
+                </div>
+                
+                <div class="card-body">
+                    {% for member in organization.members.all %}
+                        <div class="media">
+                            <div class="media-body">
+                                <p class="mt-0 card-title">{{member.person.user.name}}</p>
+                                <p class="card-text">Titles:
+                                    {% for title in member.titles.all %}
+                                        {{title.name}}
+                                    {% endfor %}
+                                </p>
+                                <p class="card-text">Roles:
+                                    {% for role in member.roles.all %}
+                                        {{role.name}}
+                                    {% endfor %}
+                                </p>
+                            </div>
+                            {% if organization.founder == request.user.profile %}
+                                
+                            {% endif %}
+                        </div>
+                        <hr/>
+                    {% endfor %}
+                </div>
+            </div>           
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+
+{% block javascript %}
+<script type="text/javascript">
+    groupRequest = function(form_id, group_id) {
+        form_selector = '#' + form_id;
+        group_selector = '#req-' + group_id;
+        url = "{% url 'organizations:org-request' %}";
+        
+
+        $(document).on('submit', form_selector, function(e) {
+            e.preventDefault();
+            
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: {
+                    organization: $(group_selector).val(),
+                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+                }, 
+                success: function(data) {
+                    $('#message').html(data.message);
+                    $('#add_contact').modal('show');
+                }
+            });
+        });
+    };
+    addMember = function(form_id, group_id, prospect_id) {
+        form_selector = '#' + form_id;
+        group_selector = '#res-' + group_id;
+        prospect_selector = '#res-' + prospect_id;
+        url = "{% url 'organizations:org-response' %}";
+
+        $(document).on('submit', form_selector, function(e) {
+            e.preventDefault();
+            
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: {
+                    organization: $(group_selector).val(),
+                    prospect: $(prospect_selector).val(),
+                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+                }, 
+                success: function(data) {
+                    $('#message').html(data.message);
+                    $('#add_contact').modal('show');
+                }
+            });
+        });
+    };
+</script>
+{% endblock javascript %}

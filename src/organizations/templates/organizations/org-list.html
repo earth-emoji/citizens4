@@ -1,0 +1,26 @@
+{% extends 'profile.html' %}
+
+{% load static %}
+
+{% block content %}
+    <div class="container-fluid">
+       <div class="row">
+           <div class="col">
+                <ul class="list-unstyled">
+                    {% for org in organizations %}
+                     <li class="media my-4">
+                        <div class="media-body">
+                            <h5 class="mt-0 mb-1"><a href="{% url 'organizations:org-details' org.slug %}">{{ org.name }}</a></h5>
+                            <p class="py-1">{{ org.description }}</p>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+           </div>
+       </div> 
+    </div>
+{% endblock content %}
+
+{% block javascript %}
+<script src="{% static 'js/org.js' %}"></script>
+{% endblock javascript %}

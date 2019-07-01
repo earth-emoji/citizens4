@@ -1,0 +1,25 @@
+{% extends 'profile.html' %}
+
+{% block content %}
+<div class='container-fluid'>
+    <div class="row">
+        <div class="col">
+            <h2>Add your organization's foundation</h2>
+            <form method="post" novalidate>
+                {% csrf_token %}
+                <div class="form-group">
+                    {{ form.vision.errors }}
+                    <label for="{{ form.vision.id_for_label }}">Vision:</label>
+                    {{ form.vision }}
+                </div>
+                <div class="form-group">
+                    {{ form.mission.errors }}
+                    <label for="{{ form.mission.id_for_label }}">Mission:</label>
+                    {{ form.mission }}
+                </div>
+                <button type="submit" class="btn btn-custom rounded-pill">Save</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}

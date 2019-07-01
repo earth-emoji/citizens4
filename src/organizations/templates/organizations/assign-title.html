@@ -1,0 +1,75 @@
+{% extends 'profile.html' %}
+
+{% block styles %}
+<style>
+
+</style>
+{% endblock styles %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col">
+            <h1>Titles</h1>
+            {% for title in titles %}
+            <div class="card my-4">
+                <div class="card-body">
+                    <h4 class="card-title">{{ title.name }}</h4>
+                    <p class="card-text">
+                        {{ title.description }}
+                    </p>
+                    <form id="title-form-{{title.id}}" class="float-right" method="POST" novalidate>
+                        {% csrf_token %}
+                        <input type="hidden" value="{{ title.id }}" name="title-{{title.id}}" id="title-{{title.id}}" />
+                        <button type="submit" onclick="assignTitle('#title-form-{{title.id}}', {{title.id}})" class="btn btn-custom rounded-pill">Assign</button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+            
+            {% comment %} <form class="form" method="POST" novalidate>
+                <h2>Title assignments</h2>
+                {% csrf_token %}
+                <div class="form-group">
+                    {{ form.titles.errors }}
+                    <label for="{{ form.titles.id_for_label }}">Titles:</label>
+                    {{ form.titles }}
+                </div>
+                <button type="submit" class="btn btn-custom rounded-pill">Submit</button>
+            </form>  {% endcomment %}
+        </div>
+    </div>
+</div>
+{% include 'modals/hard-modal.html' with org_id=organization.id mem_id=membership.id %}
+{% endblock content %}
+
+{% block javascript %}
+<script type="text/javascript">
+    assignTitle = function(form, title_id) {
+
+        //form_selector = '#title-form-' + form_id;
+        title_selector = '#title-' + title_id;
+        url = "{% url 'organizations:make-title-assignment' membership.id %}";
+
+        $(document).on('submit', form, function(e) {
+            e.preventDefault();
+            
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: {
+                    title: $(title_selector).val(),
+                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+                }, 
+                success: function(data) {
+                    $('#message').html(data.message);
+                    $('#hardModal').modal({
+                        backdrop: 'static',
+                        keyboard: false
+                    });
+                }
+            });
+        });
+    };
+</script>
+{% endblock javascript %}

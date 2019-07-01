@@ -1,0 +1,54 @@
+{% extends 'profile.html' %}
+
+{% block content %}
+    <h1 class="py-3">{{ request.user.name }}'s requests</h1>
+    {% for org_request in org_requests %}
+        <div class="card">
+            <div class="card-body">
+                <p>{{ org_request.prospect.user.name }}</p>
+                <form id="res-form-{{org_request.id}}">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <select class="form-control" id="status" name="status">
+                            <option value="1">Accept</option>
+                            <option value="0">Deny</option>
+                        </select>
+                    </div>
+                    <input type="hidden" id="res-{{org_request.group.id}}" value="{{ org_request.group.id }}" />
+                    <input type="hidden" id="res-{{org_request.prospect.id}}" value="{{ org_request.prospect.id }}" />
+                    <button type="submit" onclick="addMember('res-form-{{org_request.id}}', {{org_request.group.id}}, {{ org_request.prospect.id }})"  class="btn btn-custom rounded-pill">Respond</button>
+                </form>
+            </div>
+        </div>
+    {% endfor %}
+{% endblock content %}
+
+{% block javascript %}
+    <script type="text/javascript">
+        addMember = function(form_id, group_id, prospect_id) {
+            form_selector = '#' + form_id;
+            group_selector = '#res-' + group_id;
+            prospect_selector = '#res-' + prospect_id;
+            url = "{% url 'organization:org-response' %}";
+
+            $(document).on('submit', form_selector, function(e) {
+                e.preventDefault();
+                
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: {
+                        status: $('#status').val(),
+                        organization: $(group_selector).val(),
+                        prospect: $(prospect_selector).val(),
+                        csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+                    }, 
+                    success: function() {
+                        $('#message').html(data.message);
+                        $('#add_contact').modal('show');
+                    }
+                });
+            });
+        };
+    </script>
+{% endblock javascript %}

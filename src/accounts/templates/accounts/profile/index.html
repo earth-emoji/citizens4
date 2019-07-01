@@ -15,18 +15,7 @@
     </ul>
     <div class="tab-content" id="myTabContent">
         <div class="tab-pane fade show active" id="chat-rooms" role="tabpanel" aria-labelledby="rooms-tab">
-             <form method="POST" id="room-form">
-                {% csrf_token %}
-                <div class="input-group mb-3">
-                    <input type="text" name="name" id="name" class="form-control" placeholder="Room's name" aria-label="Room's name" aria-describedby="button-addon2">
-                    
-                    <div class="input-group-append">
-                        <button class="btn btn-second" type="submit" id="button-addon2"><i class="fas fa-plus"></i></button>
-                    </div>
-                </div>
-            </form>
-            <ul id="rooms">
-            </ul>
+             ...
         </div>
         <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">...</div>
         <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">...</div>
@@ -34,5 +23,5 @@
 {% endblock content %}
 
 {% block javascript %}
-<script src="{% static 'js/rooms.js' %}"></script>
+
 {% endblock javascript %}

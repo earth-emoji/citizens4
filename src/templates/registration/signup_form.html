@@ -32,6 +32,13 @@
             </div>
             <div class="form-row my-2">
                 <div class="col">
+                    {{ form.party.errors }}
+                    <label for="{{ form.party.id_for_label }}">Political Affiliation:</label>
+                    {{ form.party }}
+                </div>
+            </div>
+            <div class="form-row my-2">
+                <div class="col">
                     {{ form.password1.errors }}
                     <label for="{{ form.password1.id_for_label }}">Password:</label>
                     {{ form.password1 }}
